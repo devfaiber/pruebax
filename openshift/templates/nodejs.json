@@ -235,7 +235,7 @@
       "name": "NODEJS_VERSION",
       "displayName": "Version of NodeJS Image",
       "description": "Version of NodeJS image to be used (10, 12, or latest).",
-      "value": "10",
+      "value": "12",
       "required": true
     },
     {
@@ -250,7 +250,7 @@
       "displayName": "Git Repository URL",
       "description": "The URL of the repository with your application source code.",
       "required": true,
-      "value": "https://github.com/devfaiber/pruebax.git"
+      "value": "https://github.com/sclorg/nodejs-ex.git"
     },
     {
       "name": "SOURCE_REPOSITORY_REF",

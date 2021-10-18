@@ -1,0 +1,13 @@
+{
+    "MONGO_FAILED_CREDENTIALS": "MongoDB: failed credentials",
+    "APP_LISTEN_PORT": "Corriendo en el puerto: #$port",
+    "DATABASE_ONLINE": "Base de datos online",
+    "REQUEST_INVALID": "Formato de request invalido, revise con el tecnico",
+    "USER_SAVE_ERROR": "No se pudo guardar el usuario. intente mas tarde",
+    "USER_GET_ERROR": "No se pudo obtener un usuario. intente mas tarde",
+    "USER_DELETE_ERROR": "No se pudo eliminar el usuario. intente mas tarde",
+    "USER_UPDATE_ERROR": "No se pudo actualizar el usuario. intente mas tarde",
+    "USER_NOT_FOUND": "Nose encontro ningun usuario",
+    "USER_DELETED_EMPTY": "el usuario no existe, y por eso no se pudo eliminar",
+    "USER_UPDATED_EMPTY": "No se pudo eliminar el usuario. intente mas tarde"
+}
