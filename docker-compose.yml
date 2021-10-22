@@ -1,12 +1,46 @@
-version: "3.8"
+version: "3"
 services:
   mongo:
     image: mongo:latest
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: toor
-    port:
+      #MONGO_INITDB_ROOT_USERNAME: "root"
+      #MONGO_INITDB_ROOT_PASSWORD: "toor"
+      MONGO_INITDB_DATABASE: "ticity"
+    ports:
       - 27017:27017
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - app-net
+
+  nodeapp:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    environment:
+      DATABASE_SERVICE_NAME: "mongodb"
+      MONGODB_SERVICE_HOST: "mongo"
+      MONGODB_SERVICE_PORT: "27017"
+      MONGODB_DATABASE: "ticity"
+      #MONGODB_PASSWORD: "toor"
+      #MONGODB_USER: "root"
+      OPENSHIFT_NODEJS_PORT: "3000"
+      OPENSHIFT_NODEJS_IP: "0.0.0.0"
+      #OPENSHIFT_MONGODB_DB_URL: mongodb+srv://usuario1:prueba123@cluster0.tvtub.mongodb.net/test
+    volumes:
+      - ./:/app/:rw
+      - node_modules:/app/node_modules
+      
+    ports: 
+      - 8081:3000
+    depends_on:
+      - mongo
+    networks:
+      - app-net
+      
 volumes:
   mongodata:
+  node_modules:
+networks:
+  app-net:

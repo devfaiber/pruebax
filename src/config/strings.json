@@ -8,6 +8,13 @@
     "USER_DELETE_ERROR": "No se pudo eliminar el usuario. intente mas tarde",
     "USER_UPDATE_ERROR": "No se pudo actualizar el usuario. intente mas tarde",
     "USER_NOT_FOUND": "Nose encontro ningun usuario",
-    "USER_DELETED_EMPTY": "el usuario no existe, y por eso no se pudo eliminar",
-    "USER_UPDATED_EMPTY": "No se pudo eliminar el usuario. intente mas tarde"
+    "USER_DELETED_EMPTY": "el usuario no existe, y por eso no se pudo eliminar. intente nuevamente",
+    "USER_UPDATED_EMPTY": "No se pudo actualizar el usuario. puede ser que no exista. intente nuevamente",
+    
+    "METHOD_TYPE_INVALID": "El metodo de definicion, no ha sido definido",
+    "METHOD_TYPE_NULLABLE": "El metodo de definicion, es incorrecto. intente cambiarlo",
+    "REQUEST_NULLABLE": "El request, no cumple con su estructura. defina una estructura valida",
+    "REQUEST_INVALID_FOR_METHOD": "el request no cumple con el tipo #$type. algunos campos, estan vacios o no existen: #$fields",
+    
+    "MESSAGE_ERROR_E11000": "lo sentimos, este email, ya se encuentra, registrado, intente con otro"
 }

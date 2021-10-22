@@ -1,73 +1,79 @@
-const Usuario = require("../models/Usuario");
 const strings = require("./../config/strings.json");
-
+const errorMessages = require("./../validations/errors");
 const controllerAction = {
+    connectionDB: null,
     save: (body, response, res)=>{
-        const usuario = new Usuario({
+        const usuario = {
             nombre: body.data.nombre,
             email: body.data.email,
             departamento: body.data.departamento,
             municipio: body.data.municipio,
             genero: body.data.genero
-        });
-        usuario.save((err, usuarioDB)=>{
-            if(err){
-                responseValid.makeValidateResult(response, err,strings.USER_SAVE_ERROR);
-                if("_message" in err){
-                    responseValid.makeValidateResult(response, err,err._message);
-                }
+        };
+
+        let collection =  controllerAction.connectionDB.collection("usuarios");
+
+        
+        collection.insertOne(usuario).then((result)=>{
+            responseValid.makeValidateResult(response, result.insertedId, strings.USER_SAVE_ERROR);
+            if(result.insertedId){
+                response.itemCreatedId = result.insertedId;
             }
-            responseValid.makeValidateResult(response, usuarioDB, strings.USER_SAVE_ERROR);
-            if(usuarioDB){
-                response.itemCreated = usuarioDB;
-            }
+            response.itemCreatedId = result.insertedId;
+            return res.status(response.statusCode).json(response);
+        }).catch((err)=>{
+            let message = errorMessages.makeMessage(err.errmsg, strings.USER_SAVE_ERROR);
+            responseValid.makeValidateResult(response, !err,message);
             return res.status(response.statusCode).json(response);
         });
     },
     update: (body, response, res)=>{
-        const usuario = new Usuario({
+        const usuario = {
             nombre: body.data.nombre,
             email: body.data.email,
             departamento: body.data.departamento,
             municipio: body.data.municipio,
             genero: body.data.genero
-        });
+        };
 
-        Usuario.findOneAndUpdate({email: body.keys.email},usuario).exec((err,usuarioDB)=>{
-            if(err){
-                responseValid.makeValidateResult(response, err,err._message);
-                return res.status(response.statusCode).json(response);
-            }
-            responseValid.makeValidateResult(response, usuarioDB, strings.USER_UPDATED_EMPTY);
+        let collection =  controllerAction.connectionDB.collection("usuarios");
+        collection.findOneAndUpdate({email: body.keys.email},usuario).then((usuarioDB)=>{
+            responseValid.makeValidateResult(response, usuarioDB.value, strings.USER_UPDATED_EMPTY);
+            if(usuarioDB.value) response.itemUpdated = usuarioDB.value;
+            return res.status(response.statusCode).json(response);
+        }).catch((err)=>{
+            responseValid.makeValidateResult(response, !err,strings.USER_UPDATE_ERROR);
             return res.status(response.statusCode).json(response);
         });
 
     },
     delete: (body, response, res)=>{
-        Usuario.findOneAndDelete({email: body.keys.email},{}).exec((err, result)=>{
-            if(err){
-                responseValid.makeValidateResult(response, err, strings.USER_DELETE_ERROR);
-                return res.status(response.statusCode).json(response);
-            }
-            
-            responseValid.makeValidateResult(response, result, strings.USER_DELETED_EMPTY);
-            if(result) response.itemDeleted = result;
+        let collection =  controllerAction.connectionDB.collection("usuarios");
+        collection.findOneAndDelete({email: body.keys.email},{}).then((result)=>{ 
+            console.log(result);
+            responseValid.makeValidateResult(response, result.value, strings.USER_DELETED_EMPTY);
+            if(result.lastErrorObject.value) response.itemDeleted = result.value;
+            return res.status(response.statusCode).json(response);
+        }).catch((err)=>{
+            responseValid.makeValidateResult(response, !err, strings.USER_DELETE_ERROR);
             return res.status(response.statusCode).json(response);
         });
     },
     read: (body, response, res)=>{
-        Usuario.findOne({email: body.keys.email}).exec((err, usuarioDB)=>{
-            if(err){
-                responseValid.makeValidateResult(response, err, strings.USER_GET_ERROR);
-                return res.status(response.statusCode).json(response);    
-            }
+        let collection =  controllerAction.connectionDB.collection("usuarios");
+        collection.findOne({email: body.keys.email}).then((usuarioDB)=>{
+            
             responseValid.makeValidateResult(response, usuarioDB, strings.USER_NOT_FOUND);
             response.item = usuarioDB;
             return res.status(response.statusCode).json(response);
+        }).catch((err)=>{
+            responseValid.makeValidateResult(response, !err, strings.USER_GET_ERROR);
+            return res.status(response.statusCode).json(response);    
         });
     },
     list: (response, res)=>{
-        Usuario.find({}).exec((err, usuarioDB)=>{
+        let collection = controllerAction.connectionDB.collection('usuarios');
+        collection.find({}).toArray((err, usuarioDB)=>{
             if(err){
                 responseValid.makeValidateResult(response, err, strings.USER_GET_ERROR);
                 return res.status(response.statusCode).json(response);
@@ -76,6 +82,7 @@ const controllerAction = {
             response.items = usuarioDB;
             return res.status(response.statusCode).json(response);
         });
+
     }
 }
 
@@ -87,5 +94,6 @@ const responseValid = {
         }
     }
 }
+
 
 module.exports = controllerAction;

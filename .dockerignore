@@ -1,0 +1,4 @@
+.cache/
+.gnupg/
+node_modules/
+.vagrant/

@@ -1,11 +1,20 @@
 const strings = require("./../config/strings.json");
 const controllerAction = require("./userAction");
+const {validateObject, validateRequest} = require("./../validations/validation");
 const controller = {
+    conectiondb: null,
     manage: (req, res) => {
         const response = controller._getResponseBase();
-        if(!controller._validateFormatRequest(req.body, response)){
+        controllerAction.connectionDB = controller.conectiondb;
+        if(!validateRequest.validateFormatRequest(req.body, response)){
             return res.status(response.statusCode).json(response);
         }
+
+        let result = validateObject.valid(req.body.body, response);
+        if(!result){
+            return res.status(response.statusCode).json(response);
+        }
+
         switch(req.body.body.type.toUpperCase()){
             case 'INSERT':
                 controllerAction.save(req.body.body, response, res);
@@ -22,6 +31,10 @@ const controller = {
             case 'DELETE':
                 controllerAction.delete(req.body.body, response, res);
             break;
+            default:
+                response.message = strings.METHOD_TYPE_NULLABLE;
+                response.statusCode = 500;
+                res.status(response.statusCode).json(response);
         }
         
     },
@@ -37,14 +50,6 @@ const controller = {
             message: null
         };
     },
-    _validateFormatRequest: (body, response) => {
-        if(body == null || !("body" in body)){
-            response.statusCode = 404;
-            response.message = strings.REQUEST_INVALID;
-            return false;
-        }
-        return true;
-    }
 }
 
 module.exports = controller;
