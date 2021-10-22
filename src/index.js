@@ -34,6 +34,10 @@ var initDb = function(callback) {
   });
 };
 
+app.get("/", function(req,res){
+  res.status(200).send("Bienvenido");
+});
+
 app.post("/api/v1/users", function(req,res){
 
   if (!db) {
@@ -45,11 +49,15 @@ app.post("/api/v1/users", function(req,res){
   }
 });
 
+app.use(function(err, req, res, next){
+  console.error(err.stack);
+  res.status(500).send('Something bad happened!');
+});
+
 initDb(function(err){
   console.log('Error connecting to Mongo. Message:\n'+err);
 });
 
+
 // conexion al puerto
-app.listen(process.env.PORT,process.env.IP_NODEAPP,()=>{
-    console.log(strings.APP_LISTEN_PORT.replace("#$port", process.env.PORT))
-})
+app.listen(process.env.PORT,process.env.IP_NODEAPP);
